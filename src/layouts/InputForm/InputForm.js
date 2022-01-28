@@ -13,7 +13,7 @@ const InputForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        //start logic?
+        //start logic? right here
     }
     return (
         <>
