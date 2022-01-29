@@ -12,13 +12,14 @@ const InputForm = () => {
     //placeholder for time thingie
     const [deliveryFee, setDeliveryFee] = useState(0);
     //think whether create state placeholder for each fee section and add all up or not.
+    let cartFee = 0;
 
-    useEffect(() => {
-        if (deliveryFee > 15) {
-            console.log("delivery was over 15")
-            setDeliveryFee(15)
-        }
-    }, [deliveryFee])
+    //useEffect(() => {
+    //    if (deliveryFee > 15) {
+    //        console.log("delivery was over 15")
+    //        setDeliveryFee(15)
+    //    }
+    //}, [deliveryFee])
 
     useEffect(() => {
         if (cartValue => 100) {
@@ -43,13 +44,25 @@ const InputForm = () => {
     }
 
     const checkCartValDif = (cartValue) => {
-        setDeliveryFee(deliveryFee + (10 - cartValue))
+        console.log("Do I know cartVal?")
+        cartFee = 10 - cartValue;
+        console.log('cartFee: ', cartFee);
+        setDeliveryFee(deliveryFee + cartFee)
     }
 
+    console.log('cartValue: ', cartValue);
     const checkDistanceCost = (distance) => {
+        let distanceFee = 0
         console.log("I can go the distance", distance)
         let distanceInKm = distance * 1000;
         console.log('distanceInKm: ', distanceInKm);
+        if (distanceInKm < 1000) {
+            distanceFee = 2;
+            setDeliveryFee(deliveryFee + distanceFee)
+        } else {
+            distanceFee = Math.floor((distanceInKm - 1000) / 500);
+            console.log('distanceFee: ', distanceFee);
+        }
 
     }
     return (

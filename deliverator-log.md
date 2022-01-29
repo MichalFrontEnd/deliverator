@@ -1,6 +1,6 @@
 ## deliverator log
 
-27.01.21
+27.01.22
 
 - Create-react-apped.
 - Wrote down structure and what I need. 
@@ -8,7 +8,7 @@
 - Installed dependencies, but didn't read the instructions, and had clashing deps. 
 - Removed everything and will try again.
 
-28.01.21
+28.01.22
 
 - Recreated the app. Checked that it works and the initial test passes. 
   Will now slowly install jest and Enzyme step by step, and not install the TS for now:
@@ -63,16 +63,13 @@ For now decided to fire conditional checks upon submit. when true they fire rele
 Additional conditions:
 
 * Delivery can't be over 15 (anything over 15 stays 15.)
-
   * Doing in a useEffect
-
 * Free delivery for cart total over 100
-
   * Also checking with useEffect. 
   * Multiplying the delivery fee by 0 to make sure I don't have any additions I missed.
 
-  
+29.01.22
 
-  
+* Solved the cart fee issue using an interim var. Atm it's a let declared on top and realised later, in case I'll want to have a function adding all interim fees to calculate everything, but that might not be neccessary.
+* The functions run simultaneously, I guess? So now it only sets the last calculation it gets for the delivery fee. I guess I'll have to return a result and add all function results to calculate final fee. will make it easier to move functions to another file.
 
-  
