@@ -71,5 +71,10 @@ Additional conditions:
 29.01.22
 
 * Solved the cart fee issue using an interim var. Atm it's a let declared on top and realised later, in case I'll want to have a function adding all interim fees to calculate everything, but that might not be neccessary.
-* The functions run simultaneously, I guess? So now it only sets the last calculation it gets for the delivery fee. I guess I'll have to return a result and add all function results to calculate final fee. will make it easier to move functions to another file.
+* The functions run simultaneously, I guess? So now it only sets the last calculation it gets for the delivery fee. I guess I'll have to return a result and add all function results to calculate final fee. will make it easier to move functions to another file. 
+
+30.01.22
+
+* Completed main functions except for time one.
+* Pickle: When I set interim fees as let vars they did not update. When I set them in state the calculation function doesn't get all of them because state is async (even when using async await). - try testing setting it in state onChange, and making the calculation only onClick.
 

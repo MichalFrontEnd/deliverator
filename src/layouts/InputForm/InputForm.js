@@ -5,16 +5,15 @@ import InputField from '../../components/InputField/InputField';
 import './inputform.css';
 
 const InputForm = () => {
-
     const [cartValue, setCartValue] = useState(0);
     const [distance, setDistance] = useState(0);
     const [numOfItems, setNumOfItems] = useState(0);
     //placeholder for time thingie
-    const [deliveryFee, setDeliveryFee] = useState(0);
     //think whether create state placeholder for each fee section and add all up or not.
     const [cartFee, setCartFee] = useState(0);
     const [distanceFee, setDistanceFee] = useState(0)
     const [itemFee, setItemFee] = useState(0);
+    const [deliveryFee, setDeliveryFee] = useState(cartFee + distanceFee + itemFee);
 
 
     //useEffect(() => {
@@ -36,27 +35,47 @@ const InputForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        //if (cartValue === 0 || distance === 0 || numOfItems === 0) { alert("please fill all the fields!")}
-        (cartValue !== 0 && cartValue < 10) ? checkCartValDif(cartValue) : setCartFee(0);
+        //prevent submition of empty fields
+        //if (cartValue === 0 || distance === 0 || numOfItems === 0) {
+        //    window.alert("please fill all the fields!")
+        //}
+        //(cartValue !== 0 && cartValue < 10) ? checkCartValDif(cartValue) : setCartFee(0);
         //if adding unit select, check it here using select && number
-        (distance <= 1) ? setDistanceFee(2) : checkDistanceCost(distance);
-        (numOfItems <= 4) ? setItemFee(0) : checkItemFee(numOfItems)
 
-        makeCalculation(cartFee, distanceFee, itemFee);
 
-    }
-    async function makeCalculation(cartFee, distanceFee, itemFee) {
-        await console.log('cartFee+distanceFee+itemFee: ', cartFee + distanceFee + itemFee);
+
+
+        makeCalculation();
     }
 
-    const checkCartValDif = (cartValue) => {
-        setCartFee(10 - cartValue);
+    async function makeCalculation() {
+        await setDeliveryFee(cartFee + distanceFee + itemFee);
     }
+
+    console.log('deliverFee: ', deliveryFee);
+
+
+    const handleCartChange = (cart) => {
+        setCartValue(cart);
+        (cart !== 0 && cart < 10) ? setCartFee(10 - cart) : setCartFee(0);
+    }
+
+    const handleDistanceChange = (dist) => {
+        setDistance(dist);
+        (dist <= 1) ? setDistanceFee(2) : checkDistanceCost(dist);
+    }
+
+    const handleItemNumChange = (num) => {
+        setNumOfItems(num);
+        (num <= 4) ? setItemFee(0) : setItemFee((num - 4) * 0.5)
+    }
+
     console.log('cartFee: ', cartFee);
     console.log('destanceFee: ', distanceFee);
     console.log('itemFee: ', itemFee);
 
     const checkDistanceCost = (distance) => {
+        console.log("I got here")
         let distanceInKm = distance * 1000;
         let temp = Math.floor((distanceInKm - 1000) / 500);
         if (temp < 1) {
@@ -64,10 +83,6 @@ const InputForm = () => {
         } else {
             setDistanceFee(temp + 2)
         }
-    }
-
-    const checkItemFee = (numOfItems) => {
-        setItemFee((numOfItems - 4) * 0.5)
     }
 
     return (
@@ -81,7 +96,7 @@ const InputForm = () => {
                     value={cartValue}
                     unit="€"
                     onChange={(e) => {
-                        setCartValue(e.target.value)
+                        handleCartChange(e.target.value)
                     }} />
                 <InputField
                     name="distance"
@@ -90,7 +105,7 @@ const InputForm = () => {
                     //add select input for km/m
                     unit="km"
                     onChange={(e) => {
-                        setDistance(e.target.value)
+                        handleDistanceChange(e.target.value)
                     }} />
                 <InputField
                     name="numOfItems"
@@ -98,7 +113,7 @@ const InputForm = () => {
                     value={numOfItems}
                     unit=""
                     onChange={(e) => {
-                        setNumOfItems(e.target.value)
+                        handleItemNumChange(e.target.value)
                     }} />
 
                 <button className="calculate-fee-btn" type="submit">Calculate my fee</button>
