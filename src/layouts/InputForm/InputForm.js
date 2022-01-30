@@ -38,30 +38,28 @@ const InputForm = () => {
         //prevent submition of empty fields
         //if (cartValue === 0 || distance === 0 || numOfItems === 0) {
         //    window.alert("please fill all the fields!")
-        //}
-        //(cartValue !== 0 && cartValue < 10) ? checkCartValDif(cartValue) : setCartFee(0);
-        //if adding unit select, check it here using select && number
 
-
-
-
-        makeCalculation();
+        if (cartValue >= 100) {
+            setDeliveryFee(deliveryFee * 0)
+        } else {
+            let total = (cartFee + distanceFee + itemFee);
+            total >= 15 ? setDeliveryFee(15) : setDeliveryFee(total);
+        }
     }
 
-    async function makeCalculation() {
-        await setDeliveryFee(cartFee + distanceFee + itemFee);
-    }
 
     console.log('deliverFee: ', deliveryFee);
 
 
     const handleCartChange = (cart) => {
         setCartValue(cart);
+        //remove validation when uncommenting validation onSubmit
         (cart !== 0 && cart < 10) ? setCartFee(10 - cart) : setCartFee(0);
     }
 
     const handleDistanceChange = (dist) => {
         setDistance(dist);
+        //if adding unit select, check it here using select && number
         (dist <= 1) ? setDistanceFee(2) : checkDistanceCost(dist);
     }
 
@@ -75,7 +73,6 @@ const InputForm = () => {
     console.log('itemFee: ', itemFee);
 
     const checkDistanceCost = (distance) => {
-        console.log("I got here")
         let distanceInKm = distance * 1000;
         let temp = Math.floor((distanceInKm - 1000) / 500);
         if (temp < 1) {
@@ -102,7 +99,7 @@ const InputForm = () => {
                     name="distance"
                     label="Distance"
                     value={distance}
-                    //add select input for km/m
+                    //add select input for km/m?
                     unit="km"
                     onChange={(e) => {
                         handleDistanceChange(e.target.value)
