@@ -21,26 +21,31 @@ const InputForm = () => {
         //if (cartValue === 0 || distance === 0 || numOfItems === 0) {
         //    window.alert("please fill all the fields!")
 
+        //sets free delivery for purchases over 100e
         if (cartValue >= 100) {
             setDeliveryFee(deliveryFee * 0)
         } else {
+        //if delivery should be charged, set max delivery price at 15e
             let total = (cartFee + distanceFee + itemFee);
             total >= 15 ? setDeliveryFee(15) : setDeliveryFee(total);
         }
     }
 
+    //calculates additional fee for cart total under 10e
     const handleCartChange = (cart):void => {
         setCartValue(cart);
         //remove validation when uncommenting validation onSubmit
         (cart !== 0 && cart < 10) ? setCartFee(10 - cart) : setCartFee(0);
     }
 
+    //checks if extra distance fee should be added over base delivery fee 
     const handleDistanceChange = (dist):void => {
         setDistance(dist);
         //if adding unit select, check it here using select && number
         (dist <= 1) ? setDistanceFee(2) : checkDistanceCost(dist);
     }
 
+    //calculates additional fee for item quantity over 4
     const handleItemNumChange = (num):void => {
         setNumOfItems(num);
         (num <= 4) ? setItemFee(0) : setItemFee((num - 4) * 0.5)
@@ -51,6 +56,7 @@ const InputForm = () => {
     //console.log('itemFee: ', itemFee);
     //console.log('deliverFee: ', deliveryFee);
 
+    //calculates additional delivery fee for added distant orders
     const checkDistanceCost = (distance):void => {
         let distanceInKm = distance * 1000;
         let temp = Math.floor((distanceInKm - 1000) / 500);
