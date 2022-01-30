@@ -12,7 +12,10 @@ const InputForm = () => {
     //placeholder for time thingie
     const [deliveryFee, setDeliveryFee] = useState(0);
     //think whether create state placeholder for each fee section and add all up or not.
-    let cartFee = 0;
+    const [cartFee, setCartFee] = useState(0);
+    const [distanceFee, setDistanceFee] = useState(0)
+    const [itemFee, setItemFee] = useState(0);
+
 
     //useEffect(() => {
     //    if (deliveryFee > 15) {
@@ -22,7 +25,7 @@ const InputForm = () => {
     //}, [deliveryFee])
 
     useEffect(() => {
-        if (cartValue => 100) {
+        if (cartValue >= 100) {
             //if cart over 100, ensure delivery is free no matter what
             //*check if includes rush hour
             console.log("cart is over 100")
@@ -33,38 +36,40 @@ const InputForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (cartValue != 0 && cartValue < 10) {
-            checkCartValDif(cartValue)
-        } else {
-            setDeliveryFee(0)
-        }
-
+        //if (cartValue === 0 || distance === 0 || numOfItems === 0) { alert("please fill all the fields!")}
+        (cartValue !== 0 && cartValue < 10) ? checkCartValDif(cartValue) : setCartFee(0);
         //if adding unit select, check it here using select && number
-        checkDistanceCost(distance);
+        (distance <= 1) ? setDistanceFee(2) : checkDistanceCost(distance);
+        (numOfItems <= 4) ? setItemFee(0) : checkItemFee(numOfItems)
+
+        makeCalculation(cartFee, distanceFee, itemFee);
+
+    }
+    async function makeCalculation(cartFee, distanceFee, itemFee) {
+        await console.log('cartFee+distanceFee+itemFee: ', cartFee + distanceFee + itemFee);
     }
 
     const checkCartValDif = (cartValue) => {
-        console.log("Do I know cartVal?")
-        cartFee = 10 - cartValue;
-        console.log('cartFee: ', cartFee);
-        setDeliveryFee(deliveryFee + cartFee)
+        setCartFee(10 - cartValue);
     }
+    console.log('cartFee: ', cartFee);
+    console.log('destanceFee: ', distanceFee);
+    console.log('itemFee: ', itemFee);
 
-    console.log('cartValue: ', cartValue);
     const checkDistanceCost = (distance) => {
-        let distanceFee = 0
-        console.log("I can go the distance", distance)
         let distanceInKm = distance * 1000;
-        console.log('distanceInKm: ', distanceInKm);
-        if (distanceInKm < 1000) {
-            distanceFee = 2;
-            setDeliveryFee(deliveryFee + distanceFee)
+        let temp = Math.floor((distanceInKm - 1000) / 500);
+        if (temp < 1) {
+            setDistanceFee(3)
         } else {
-            distanceFee = Math.floor((distanceInKm - 1000) / 500);
-            console.log('distanceFee: ', distanceFee);
+            setDistanceFee(temp + 2)
         }
-
     }
+
+    const checkItemFee = (numOfItems) => {
+        setItemFee((numOfItems - 4) * 0.5)
+    }
+
     return (
         <>
             <form
