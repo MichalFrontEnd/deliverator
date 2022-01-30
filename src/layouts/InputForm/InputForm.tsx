@@ -5,35 +5,17 @@ import InputField from '../../components/InputField/InputField';
 import './inputform.css';
 
 const InputForm = () => {
-    const [cartValue, setCartValue] = useState(0);
-    const [distance, setDistance] = useState(0);
-    const [numOfItems, setNumOfItems] = useState(0);
+    const [cartValue, setCartValue] = useState<number>(0);
+    const [distance, setDistance] = useState<number>(0);
+    const [numOfItems, setNumOfItems] = useState<number>(0);
     //placeholder for time thingie
     //think whether create state placeholder for each fee section and add all up or not.
-    const [cartFee, setCartFee] = useState(0);
-    const [distanceFee, setDistanceFee] = useState(0)
-    const [itemFee, setItemFee] = useState(0);
-    const [deliveryFee, setDeliveryFee] = useState(cartFee + distanceFee + itemFee);
+    const [cartFee, setCartFee] = useState<number>(0);
+    const [distanceFee, setDistanceFee] = useState<number>(0);
+    const [itemFee, setItemFee] = useState<number>(0);
+    const [deliveryFee, setDeliveryFee] = useState<number>(cartFee + distanceFee + itemFee);
 
-
-    //useEffect(() => {
-    //    if (deliveryFee > 15) {
-    //        console.log("delivery was over 15")
-    //        setDeliveryFee(15)
-    //    }
-    //}, [deliveryFee])
-
-    useEffect(() => {
-        if (cartValue >= 100) {
-            //if cart over 100, ensure delivery is free no matter what
-            //*check if includes rush hour
-            console.log("cart is over 100")
-            setDeliveryFee(deliveryFee * 0)
-        }
-    }, [cartValue])
-
-
-    const handleSubmit = (e) => {
+    const handleSubmit = (e):void => {
         e.preventDefault();
         //prevent submition of empty fields
         //if (cartValue === 0 || distance === 0 || numOfItems === 0) {
@@ -47,32 +29,29 @@ const InputForm = () => {
         }
     }
 
-
-    console.log('deliverFee: ', deliveryFee);
-
-
-    const handleCartChange = (cart) => {
+    const handleCartChange = (cart):void => {
         setCartValue(cart);
         //remove validation when uncommenting validation onSubmit
         (cart !== 0 && cart < 10) ? setCartFee(10 - cart) : setCartFee(0);
     }
 
-    const handleDistanceChange = (dist) => {
+    const handleDistanceChange = (dist):void => {
         setDistance(dist);
         //if adding unit select, check it here using select && number
         (dist <= 1) ? setDistanceFee(2) : checkDistanceCost(dist);
     }
 
-    const handleItemNumChange = (num) => {
+    const handleItemNumChange = (num):void => {
         setNumOfItems(num);
         (num <= 4) ? setItemFee(0) : setItemFee((num - 4) * 0.5)
     }
 
-    console.log('cartFee: ', cartFee);
-    console.log('destanceFee: ', distanceFee);
-    console.log('itemFee: ', itemFee);
+    //console.log('cartFee: ', cartFee);
+    //console.log('destanceFee: ', distanceFee);
+    //console.log('itemFee: ', itemFee);
+    //console.log('deliverFee: ', deliveryFee);
 
-    const checkDistanceCost = (distance) => {
+    const checkDistanceCost = (distance):void => {
         let distanceInKm = distance * 1000;
         let temp = Math.floor((distanceInKm - 1000) / 500);
         if (temp < 1) {
@@ -93,7 +72,7 @@ const InputForm = () => {
                     value={cartValue}
                     unit="€"
                     onChange={(e) => {
-                        handleCartChange(e.target.value)
+                        handleCartChange((e.target as HTMLInputElement).value)
                     }} />
                 <InputField
                     name="distance"
@@ -102,7 +81,7 @@ const InputForm = () => {
                     //add select input for km/m?
                     unit="km"
                     onChange={(e) => {
-                        handleDistanceChange(e.target.value)
+                        handleDistanceChange((e.target as HTMLInputElement).value)
                     }} />
                 <InputField
                     name="numOfItems"
@@ -110,7 +89,7 @@ const InputForm = () => {
                     value={numOfItems}
                     unit=""
                     onChange={(e) => {
-                        handleItemNumChange(e.target.value)
+                        handleItemNumChange((e.target as HTMLInputElement).value)
                     }} />
 
                 <button className="calculate-fee-btn" type="submit">Calculate my fee</button>
