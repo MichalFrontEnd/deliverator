@@ -1,6 +1,6 @@
 ## deliverator log
 
-27.01.21
+27.01.22
 
 - Create-react-apped.
 - Wrote down structure and what I need. 
@@ -8,7 +8,7 @@
 - Installed dependencies, but didn't read the instructions, and had clashing deps. 
 - Removed everything and will try again.
 
-28.01.21
+28.01.22
 
 - Recreated the app. Checked that it works and the initial test passes. 
   Will now slowly install jest and Enzyme step by step, and not install the TS for now:
@@ -32,8 +32,44 @@
   Following YT tutorial step-by-step and so far it's working with the adapter and the scripts in the setupTest.js that I too from another tutorial (on YT they will do it later).
 
 - Started by creating a button on the InputForm component just to see I'm getting my tests right.
+
   - forgot to import {shallow} from enzyme
+
   - forgot to export the component function (figured that out after some flailing, when I decided to actually read the error.)
-  - Trying to test for the existence of the form, but haven't found right syntax.
+
+    - Trying to test for the existence of the form, but haven't found right syntax. - Just this? 
+
+      ```react
+      wrapper.find('form');
+          });
+
   - extracting wrapper and using beforeEach doesn't work..
+
+
+Started working on the form.
+
+For now decided to fire conditional checks upon submit. when true they fire relevant functions (that I might later move to a helper file to have a neater file and show I can keep a clean structure):
+
+* checkCartDif - if cart total is lower than 10 it adds the difference as a delivery fee state item(via addition)
+  * cases: when changing the amount it adds up to previous difference. 
+    * check if i can reset it when done. --> I don't think so, but I might be able to have an interim variable that I could reset onChange?
+* checkDistanceCost - if distance less than 2K fee is 2, for every 500m +1 Euro. 
+  * if distance over 1 it will be multiplied by 1000. 2000 will be subtracted, the remainder will be divided by 500, <u>rounded down</u> to closest full int. and added on top of the 2.
+  * Later might want to add a dropdown for km/m, and then might have to manipulate the numbers (can't assume that if people use meters it will be less than 1K)
+* CheckNumofItems - If total of item quantity is less than 5 (equal or less than 4) no extra fee. extra 0.5e for every item over for (subtract 4 and multiply)
+* CheckRushHour - If it's rush hour the fee is multiplied by 1.1.
+  * Need to check the whole date thing.
+
+Additional conditions:
+
+* Delivery can't be over 15 (anything over 15 stays 15.)
+  * Doing in a useEffect
+* Free delivery for cart total over 100
+  * Also checking with useEffect. 
+  * Multiplying the delivery fee by 0 to make sure I don't have any additions I missed.
+
+29.01.22
+
+* Solved the cart fee issue using an interim var. Atm it's a let declared on top and realised later, in case I'll want to have a function adding all interim fees to calculate everything, but that might not be neccessary.
+* The functions run simultaneously, I guess? So now it only sets the last calculation it gets for the delivery fee. I guess I'll have to return a result and add all function results to calculate final fee. will make it easier to move functions to another file.
 
