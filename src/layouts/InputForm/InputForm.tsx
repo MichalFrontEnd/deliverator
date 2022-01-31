@@ -85,7 +85,7 @@ const InputForm = () => {
                     Calculate my fee
                 </button>
             </form>
-            <h3>Delivery Fee {deliveryFee}€</h3>
+            <h3 className="delivery-fee">Delivery Fee {deliveryFee} €</h3>
         </div>
     );
 };

@@ -10,10 +10,10 @@ type Props = {
 const InputField: FC<Props> = ({ name, label, unit,...rest }) => {
     return (
         <div className="input-container">
+            <label htmlFor={name}>{label}</label>
             <div className="input-group">
-                <label htmlFor={name}>{label}</label>
                 <input id={name}{...rest}></input>
-                <p>{unit}</p>
+                <p className="unit">{unit}</p>
             </div>
         </div>
     )

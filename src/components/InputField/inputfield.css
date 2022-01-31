@@ -1,10 +1,25 @@
 .input-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .input-group {
     display: flex;
-    justify-items: center;
+    align-items: center;
+}
+
+.input-container label,
+.input-group input,
+.input-group .unit {
+    font-family: "Nunito Sans", sans-serif;
+}
+
+.input-container label {
+    font-weight: 600;
+}
+
+.input-group .unit {
+    margin-left: 3%;
 }
