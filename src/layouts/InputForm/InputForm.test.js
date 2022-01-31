@@ -2,12 +2,7 @@ import { shallow, mount } from "enzyme";
 
 import InputForm from './InputForm'
 
-
 describe("testing Input Form", () => {
-    //let wrapper;
-    //beforeEach = () => {
-    //    wrapper = shallow(<InputForm />);
-    //}
     test('render a form ', () => {
         const wrapper = shallow(<InputForm />);
         wrapper.find('form');
