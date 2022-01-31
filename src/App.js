@@ -1,7 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 
-import InputForm from './layouts/InputForm';
+import InputForm from './components/FeeForm';
 import Header from 'components/Header';
 
 function App() {
