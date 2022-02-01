@@ -221,3 +221,57 @@ Moving on to the functions:
 I set functions to return void (because they don't return), BUT couldn't have prop be number because it's an inputField, but when set to inputField I couldn't do math operations on it... Tried to do **:** *number* **&** HTMLInputElement or **:** *number* | HTMLInputElement but then it complained that .value is not a string.
 
 I am about to burst because I somehow erased all my TSX files and settings and I'll have to redo it. I almost lost the log as well, but luckily backed it up to another file, so now I can hopefully easiily recreate this.
+
+https://dev.to/giselamd/creating-a-react-input-component-in-typescript-hai
+
+<u>Things I did with Guy:</u>
+
+* Make functions more concise, and move them to an  external file - utils. Also helps with testing, because it's harder to test things that sit in state. Instead of getting a result and storing it in state, each function returns the value, and the Delivery fee is calculated from adding the functions themselves (the returns).
+
+* We also set external const variables that sat originally outside the function, and now at the top of the util page. these are the variables recieved from the instructions, and it's better practice not to hard code them. Writing them outside in all-caps is the norm.
+
+  ```javascript
+  const FREE_DISTANCE_FEE = 1000;
+  const FREE_ITEM_FEE = 4;
+  
+  //calculates additional fee for cart total under 10e
+  export const calculateCartFee = (cartValue: number): number => {
+      return cartValue < 10 ? 10 - cartValue : 0;
+  };
+  
+  //checks if extra distance fee should be added over base delivery fee
+  export const calculateDistanceFee = (distance: number): number => {
+      return distance <= FREE_DISTANCE_FEE ? 2 : Math.ceil(distance / 500);
+  };
+  
+  //calculates additional fee for item quantity over 4
+  export const calculateItemNumberFee = (numOfItems: number): number => {
+      return numOfItems <= FREE_ITEM_FEE ? 0 : (numOfItems - FREE_ITEM_FEE) * 0.5;
+  };
+  
+  const isRushHour = (date): boolean => {
+      const currentDay = date.getDay();
+      const currentHour = date.getHours();
+      return currentDay === 5 && currentHour >= 15 && currentHour <= 19;
+  };
+  
+  export const calculateRushHourFee = (date, totalFee): number => {
+      return isRushHour(date) ? Number((totalFee * 1.1).toFixed(2)) : totalFee;
+  };
+  
+  export const isMaxFee = (totalFee): boolean => {
+      return totalFee >= 15;
+  };
+  
+  export const isMaxCartValue = (cartValue): boolean => {
+      return cartValue >= 100;
+  };
+  
+  ///final calculation:
+        let totalFee: number = calculateCartFee(cartValue) + calculateDistanceFee(distance) + calculateItemNumberFee(numOfItems);
+              totalFee = calculateRushHourFee(startDate, totalFee);
+              isMaxFee(totalFee) ? setDeliveryFee(15) : setDeliveryFee(totalFee);
+  ```
+
+  
+

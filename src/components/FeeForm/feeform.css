@@ -1,0 +1,39 @@
+.form-container {
+    border: 3px solid black;
+    border-radius: 1%;
+    width: 50%;
+    height: 50vh;
+    margin-left: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-top: 4%;
+    padding-bottom: 3%;
+}
+
+.calculate-fee-btn {
+    margin-top: 5%;
+    background-color: rgb(246, 247, 250);
+    border: rgb(41, 41, 41) 3px solid;
+    border-radius: 7%;
+    padding: 1.5%;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.react-datepicker-wrapper {
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+.error-msg,
+.delivery-fee,
+.calculate-fee-btn,
+.react-datepicker-ignore-onclickoutside {
+    font-family: "Nunito Sans", sans-serif;
+}
+
+.error-msg {
+    font-weight: 600;
+    color: rgb(27, 0, 0);
+}

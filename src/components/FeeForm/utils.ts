@@ -3,25 +3,21 @@ const FREE_ITEM_FEE = 4;
 
 //calculates additional fee for cart total under 10e
 export const calculateCartFee = (cartValue: number): number => {
-    //setCartValue(cart);
     return cartValue < 10 ? 10 - cartValue : 0;
 };
 
 //checks if extra distance fee should be added over base delivery fee
 export const calculateDistanceFee = (distance: number): number => {
-    //setDistance(dist);
-    //if adding unit select, check it here using select && number
     return distance <= FREE_DISTANCE_FEE ? 2 : Math.ceil(distance / 500);
 };
 
 //calculates additional fee for item quantity over 4
 export const calculateItemNumberFee = (numOfItems: number): number => {
-    //setNumOfItems(num);
     return numOfItems <= FREE_ITEM_FEE ? 0 : (numOfItems - FREE_ITEM_FEE) * 0.5;
 };
 
+//Confirms if time input is during rush hour
 const isRushHour = (date): boolean => {
-    console.log("date: ", date);
     const currentDay = date.getDay();
     const currentHour = date.getHours();
     return currentDay === 5 && currentHour >= 15 && currentHour <= 19;
