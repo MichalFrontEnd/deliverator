@@ -25,6 +25,7 @@
   import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
   
   Enzyme.configure({ adapter: new Adapter() });
+  ```
 
 
   (I commented out the jest import. Not sure if needed to.--->Not if I want to pass the initial test in the App.test.js file, because that uses jest syntax).
@@ -42,6 +43,7 @@
       ```react
       wrapper.find('form');
           });
+      ```
 
   - extracting wrapper and using beforeEach doesn't work..
 
@@ -71,5 +73,151 @@ Additional conditions:
 29.01.22
 
 * Solved the cart fee issue using an interim var. Atm it's a let declared on top and realised later, in case I'll want to have a function adding all interim fees to calculate everything, but that might not be neccessary.
-* The functions run simultaneously, I guess? So now it only sets the last calculation it gets for the delivery fee. I guess I'll have to return a result and add all function results to calculate final fee. will make it easier to move functions to another file.
+* The functions run simultaneously, I guess? So now it only sets the last calculation it gets for the delivery fee. I guess I'll have to return a result and add all function results to calculate final fee. will make it easier to move functions to another file. 
 
+30.01.22
+
+* Completed main functions except for time one.
+
+* Pickle: When I set interim fees as let vars they did not update. When I set them in state the calculation function doesn't get all of them because state is async (even when using async await). - try testing setting it in state onChange, and making the calculation only onClick.
+
+* Changed to firing functions onChange (while setting in state simultaneously), and now calculation function works. Added the extra checks to calculation function (over 15 del fee, cart over 100).
+
+* Cleaned up code. Looks much more nice and concise.
+
+* Setting up TS to convert everything.  
+
+  Following this tutorial: https://www.sitepoint.com/how-to-migrate-a-react-app-to-typescript/
+
+```bash
+npm install --save typescript @types/node @types/react @types/react-dom @types/jest
+#not including node, because I'm not using it here and it caused errors
+
+#generating tsconfig.json:
+npx tsc --init
+```
+
+The tscnfig file that was genrated had errors and was mostly commented out, so I took the code from here instead: https://medium.com/swlh/convert-your-javascript-react-app-to-typescript-the-easy-guide-631592dc1876
+
+*** You might have to change the `strict` and `noImplicitAny` properties to `false` until your code base is converted, in order to make TypeScript a bit less annoying with the missing types or implicit any. ***
+
+```json
+{
+  "compilerOptions": {
+    "noImplicitAny": false /* Raise error on expressions and declarations with an implied 'any' type. */,
+    "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
+    "sourceMap": true /* Generates corresponding '.map' file. */,
+    "target": "es2015" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019' or 'ESNEXT'. */,
+    "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
+    "types": [
+      "react"
+    ] /* Type declaration files to be included in compilation. */,
+    "module": "esNext" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+    "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
+    "declaration": false /* Generates corresponding '.d.ts' file. */,
+    "removeComments": true /* Do not emit comments to output. */,
+    "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
+    "noUnusedLocals": false /* Report errors on unused locals. */,
+    "strict": true /* Enable all strict type-checking options. */,
+    "outDir": "dist" /* Redirect output structure to the directory. */,
+    "baseUrl": "src" /* Base directory to resolve non-absolute module names. */,
+    "typeRoots": [
+      "./types",
+      "node_modules/@types"
+    ] /* List of folders to include type definitions from. */,
+    "strictNullChecks": true /* Enable strict null checks. */,
+    "allowJs": true /* Allow javascript files to be compiled. */
+  },
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
+```
+
+
+
+I'll start with gradually changing things. 
+
+My only current other component is the Input field (will later create Header, and ask Guy if I should convert the button)
+
+```react
+const InputField = ({ name, label, value, unit, onChange }) => {
+    return (
+        <div className="input-group">
+            <label>{label}</label>
+            <input type="text" name={name} value={value} onChange={onChange}></input>
+            <p>{unit}</p>
+        </div>
+    )
+}
+```
+
+New file now looks like this (not sure about value, that could include a Date. It didn't let me add a Date as a type), but so far no errors.
+
+! Notice I needed to add the ChangeEventHandler, and also, before I was importing a lowercase react, instead of React.
+
+```typescript
+import React, { ChangeEventHandler } from "react";
+import './inputfield.css'
+
+type Props = {
+    name: string,
+    label: string,
+    value: number | string,
+    unit: string,
+    onChange: ChangeEventHandler
+}
+const InputField = ({ name, label, value, unit, onChange }: Props) => {
+    return (
+        <div className="input-group">
+            <label>{label}</label>
+            <input type="text" name={name} value={value} onChange={onChange}></input>
+            <p>{unit}</p>
+        </div>
+    )
+}
+
+export default InputField;
+```
+
+moved on to main Form file and had many type errors.
+
+<u>Issues here:</u>
+
+first is: Property 'value' does not exist on type 'EventTarget & Element', wherever I'm trying to get an input value (also had that on InnoRadar).
+
+solution (telling TS what type of element this is, and that this element has a value method):
+
+```react
+handleCartChange((e.target as HTMLInputElement).value)
+```
+
+Giving type to hook stateful elements:
+
+read this: https://medium.com/@martin.crabtree/using-typescript-with-react-js-hooks-part-1-of-2-319b3be83046#:~:text=TypeScript%20Interfaces%3A,reference%20objects%20of%20that%20type.
+
+That's what a primitive type would look like. Will see later about Date.
+
+```typescript
+    const [cartValue, setCartValue] = useState<number>(0);
+```
+
+Moving on to the functions:
+
+```react
+    const checkDistanceCost = (distance): void => {
+        let distanceInKm = distance * 1000;
+        let temp = Math.floor((distanceInKm - 1000) / 500);
+        if (temp < 1) {
+            setDistanceFee(3)
+        } else {
+            setDistanceFee(temp + 2)
+        }
+    }
+```
+
+I set functions to return void (because they don't return), BUT couldn't have prop be number because it's an inputField, but when set to inputField I couldn't do math operations on it... Tried to do **:** *number* **&** HTMLInputElement or **:** *number* | HTMLInputElement but then it complained that .value is not a string.
+
+I am about to burst because I somehow erased all my TSX files and settings and I'll have to redo it. I almost lost the log as well, but luckily backed it up to another file, so now I can hopefully easiily recreate this.
